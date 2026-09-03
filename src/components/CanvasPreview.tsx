@@ -96,9 +96,17 @@ export function CanvasPreview() {
             </div>
           )}
 
-          <span className="pointer-events-none absolute bottom-2 right-3 text-[11px] tabular-nums text-ink-subtle">
-            {index + 1} / {pages.length} · {format.label} · {Math.round(scale * 100)}% ·{' '}
-            {fontSize}px
+          {/*
+            Pe telefon linia de stare urca sus, ca sa nu se suprapuna peste
+            avertisment, si pastreaza doar numarul paginii — restul sunt detalii
+            utile pe ecran mare, dar zgomot pe unul mic.
+          */}
+          <span className="pointer-events-none absolute right-3 top-2 text-[11px] tabular-nums text-ink-subtle md:bottom-2 md:top-auto">
+            {index + 1} / {pages.length}
+            <span className="hidden md:inline">
+              {' '}
+              · {format.label} · {Math.round(scale * 100)}% · {fontSize}px
+            </span>
           </span>
         </>
       ) : (
