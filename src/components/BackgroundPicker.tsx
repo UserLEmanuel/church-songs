@@ -1,19 +1,23 @@
 import { useRef } from 'react';
 import type { Page } from '../types';
 import { DEFAULT_OVERLAY } from '../lib/constants';
+import { getFormat } from '../lib/formats';
 import { useLibraryStore } from '../store/useLibraryStore';
 import { useServiceStore } from '../store/useServiceStore';
+import { IconCheck, IconUpload } from './icons';
 
 type Props = { page: Page };
 
-/** Galeria de fundaluri + upload propriu + sliderul de overlay, pentru pagina selectata. */
+/** Galeria de fundaluri + upload propriu + sliderul de intunecare, pentru pagina selectata. */
 export function BackgroundPicker({ page }: Props) {
   const backgrounds = useLibraryStore((s) => s.backgrounds);
   const addCustomBackground = useLibraryStore((s) => s.addCustomBackground);
   const updatePage = useServiceStore((s) => s.updatePage);
   const setBackgroundForAll = useServiceStore((s) => s.setBackgroundForAll);
+  const formatId = useServiceStore((s) => s.service.format);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const format = getFormat(formatId);
   const overlay = page.overlayOpacity ?? DEFAULT_OVERLAY;
 
   const handleUpload = (files: FileList | null) => {
@@ -27,34 +31,43 @@ export function BackgroundPicker({ page }: Props) {
   };
 
   return (
-    <div className="border-t border-slate-200 p-3">
+    <div className="border-t border-line bg-surface-sunken/60 p-3">
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Fundal</h3>
+        <h3 className="text-[11px] font-bold uppercase tracking-wider text-ink-subtle">Fundal</h3>
         <button
           type="button"
           onClick={() => setBackgroundForAll(page.backgroundId)}
-          className="text-xs text-slate-500 underline decoration-dotted hover:text-slate-800"
+          className="rounded px-1.5 py-0.5 text-[11px] font-semibold text-brand transition hover:bg-brand-soft"
         >
           Aplică la toate
         </button>
       </div>
 
-      <div className="thin-scroll grid max-h-40 grid-cols-4 gap-1.5 overflow-y-auto pr-1">
-        {backgrounds.map((bg) => (
-          <button
-            key={bg.id}
-            type="button"
-            title={bg.label}
-            onClick={() => updatePage(page.id, { backgroundId: bg.id })}
-            className={`aspect-[210/297] overflow-hidden rounded border-2 ${
-              bg.id === page.backgroundId
-                ? 'border-slate-800'
-                : 'border-transparent hover:border-slate-400'
-            }`}
-          >
-            <img src={bg.src} alt={bg.label} className="h-full w-full object-cover" />
-          </button>
-        ))}
+      <div className="thin-scroll grid max-h-36 grid-cols-4 gap-1.5 overflow-y-auto pr-1">
+        {backgrounds.map((bg) => {
+          const active = bg.id === page.backgroundId;
+          return (
+            <button
+              key={bg.id}
+              type="button"
+              title={bg.label}
+              aria-label={`Fundal: ${bg.label}`}
+              aria-pressed={active}
+              onClick={() => updatePage(page.id, { backgroundId: bg.id })}
+              style={{ aspectRatio: `${format.width} / ${format.height}` }}
+              className={`relative overflow-hidden rounded-md ring-2 transition ${
+                active ? 'ring-brand' : 'ring-transparent hover:ring-line-strong'
+              }`}
+            >
+              <img src={bg.src} alt="" className="h-full w-full object-cover" />
+              {active && (
+                <span className="absolute inset-0 flex items-center justify-center bg-brand/35 text-white">
+                  <IconCheck size={14} />
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       <input
@@ -68,18 +81,19 @@ export function BackgroundPicker({ page }: Props) {
       <button
         type="button"
         onClick={() => fileRef.current?.click()}
-        className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-white"
+        className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-line-strong bg-surface px-3 py-2 text-xs font-semibold text-ink-muted transition hover:border-brand hover:text-brand"
       >
-        Încarcă imaginea ta…
+        <IconUpload size={14} />
+        Încarcă imaginea ta
       </button>
-      <p className="mt-1 text-[11px] leading-tight text-slate-400">
-        Imaginile încărcate rămân doar în sesiunea curentă (se pierd la reîncărcarea paginii).
+      <p className="mt-1 text-[11px] leading-tight text-ink-subtle">
+        Imaginile încărcate rămân doar în sesiunea curentă.
       </p>
 
       <label className="mt-3 block">
-        <span className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <span className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-ink-subtle">
           Întunecare fundal
-          <span className="font-normal normal-case tracking-normal text-slate-400">
+          <span className="font-semibold normal-case tracking-normal tabular-nums text-ink-muted">
             {Math.round(overlay * 100)}%
           </span>
         </span>
@@ -90,7 +104,7 @@ export function BackgroundPicker({ page }: Props) {
           step={1}
           value={Math.round(overlay * 100)}
           onChange={(e) => updatePage(page.id, { overlayOpacity: Number(e.target.value) / 100 })}
-          className="mt-1 w-full accent-slate-800"
+          className="mt-1.5 w-full accent-brand"
         />
       </label>
     </div>

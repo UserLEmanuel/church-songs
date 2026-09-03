@@ -1,17 +1,30 @@
-import { useLayoutEffect, useRef, useState } from 'react';
-import { FONT_MAX, FONT_MIN } from './constants';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 /**
  * Micsoreaza progresiv fontul pana cand tot continutul incape in container.
  *
- * Cum functioneaza: facem o cautare binara intre FONT_MIN si FONT_MAX si pastram
+ * Cum functioneaza: facem o cautare binara intre `min` si `max` si pastram
  * cel mai MARE font la care continutul inca incape (fara scroll, fara taiere).
  * Toate marimile din interior sunt definite in `em`, deci se scaleaza odata cu el.
+ *
+ * `onFontSize` primeste rezultatul, ca sa putem avertiza cand textul e prea mic.
  */
-export function useAutoFit(deps: unknown[]) {
+export function useAutoFit(
+  deps: unknown[],
+  min: number,
+  max: number,
+  onFontSize?: (px: number) => void,
+) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [fontSize, setFontSize] = useState(FONT_MAX);
+  const [fontSize, setFontSize] = useState(max);
+
+  // Tinem callback-ul intr-un ref: asa nu trebuie sa fie in lista de dependinte
+  // si nu re-rulam masuratoarea degeaba la fiecare randare a parintelui.
+  const callbackRef = useRef(onFontSize);
+  useEffect(() => {
+    callbackRef.current = onFontSize;
+  });
 
   useLayoutEffect(() => {
     const container = containerRef.current;
@@ -26,9 +39,9 @@ export function useAutoFit(deps: unknown[]) {
       );
     };
 
-    let lo = FONT_MIN;
-    let hi = FONT_MAX;
-    let best = FONT_MIN;
+    let lo = min;
+    let hi = max;
+    let best = min;
     while (lo <= hi) {
       const mid = Math.floor((lo + hi) / 2);
       if (fits(mid)) {
@@ -41,8 +54,9 @@ export function useAutoFit(deps: unknown[]) {
 
     content.style.fontSize = `${best}px`;
     setFontSize(best);
+    callbackRef.current?.(best);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+  }, [...deps, min, max]);
 
   return { containerRef, contentRef, fontSize };
 }

@@ -40,15 +40,19 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="flex h-full w-full flex-col bg-slate-50">
-      <div className="flex items-center justify-between px-3 py-2">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Pagini</h2>
-        <span className="text-xs text-slate-400">{pages.length}</span>
+    <aside className="flex h-full w-full flex-col bg-surface-muted">
+      <div className="flex items-center justify-between px-3.5 pb-1.5 pt-3">
+        <h2 className="text-[11px] font-bold uppercase tracking-wider text-ink-subtle">
+          Paginile serviciului
+        </h2>
+        <span className="rounded-full bg-surface-sunken px-2 py-0.5 text-[11px] font-semibold tabular-nums text-ink-muted">
+          {pages.length}
+        </span>
       </div>
 
-      <div className="thin-scroll group/list min-h-0 flex-1 overflow-y-auto px-2 pb-2">
+      <div className="thin-scroll min-h-0 flex-1 overflow-y-auto px-2.5 pb-2">
         {pages.length === 0 ? (
-          <p className="px-1 py-6 text-center text-sm text-slate-400">
+          <p className="px-2 py-8 text-center text-sm leading-relaxed text-ink-subtle">
             Niciun slide încă.
             <br />
             Adaugă unul mai jos.
@@ -77,7 +81,7 @@ export function Sidebar() {
         )}
       </div>
 
-      <div className="px-2 pb-2">
+      <div className="px-2.5 pb-3">
         <AddPageMenu index={pages.length} />
       </div>
 

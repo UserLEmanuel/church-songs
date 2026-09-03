@@ -1,5 +1,8 @@
 // Modelul de date al aplicatiei.
 
+import type { FormatId } from '../lib/formats';
+import type { FontId } from '../lib/fonts';
+
 /** Tipurile de pagina dintr-un serviciu. */
 export type PageType = 'chemare' | 'cantare' | 'text-fix' | 'predica' | 'libera';
 
@@ -23,9 +26,13 @@ export type Page = {
   hint?: string;
 };
 
-/** Serviciul curent = nume + lista ordonata de pagini. */
+/** Serviciul curent = nume + format + lista ordonata de pagini. */
 export type Service = {
   name: string;
+  /** Formatul slide-urilor. Se aplica intregului serviciu. */
+  format: FormatId;
+  /** Fontul folosit pe slide-uri. */
+  font: FontId;
   pages: Page[];
 };
 

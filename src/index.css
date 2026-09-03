@@ -10,17 +10,47 @@ body,
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  @apply bg-slate-100 text-slate-800;
+  font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  @apply bg-surface-muted text-ink;
+}
+
+/* Inel de focus vizibil peste tot, dar doar la navigarea cu tastatura. */
+@layer base {
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand ring-offset-2 ring-offset-surface;
+  }
+
+  button,
+  [role='button'],
+  label {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
 }
 
 /* Scrollbar discret pentru listele lungi. */
 .thin-scroll::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 .thin-scroll::-webkit-scrollbar-thumb {
-  @apply rounded-full bg-slate-300;
+  @apply rounded-full border-4 border-solid border-transparent bg-line-strong bg-clip-content;
 }
 .thin-scroll::-webkit-scrollbar-track {
   background: transparent;
+}
+
+/* Respectam preferinta de sistem "mai putina miscare". */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
