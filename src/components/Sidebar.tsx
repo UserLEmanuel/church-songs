@@ -2,6 +2,7 @@ import {
   DndContext,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   closestCenter,
   useSensor,
   useSensors,
@@ -18,16 +19,24 @@ import { SortablePageItem } from './SortablePageItem';
 import { AddPageMenu } from './AddPageMenu';
 import { BackgroundPicker } from './BackgroundPicker';
 
+type Props = {
+  /** Apelat cand utilizatorul deschide o pagina din lista. */
+  onPageOpen?: () => void;
+};
+
 /** Coloana din stanga: lista paginilor (reordonabila) + setarile de fundal. */
-export function Sidebar() {
+export function Sidebar({ onPageOpen }: Props = {}) {
   const pages = useServiceStore((s) => s.service.pages);
   const selectedPageId = useServiceStore((s) => s.selectedPageId);
   const reorderPages = useServiceStore((s) => s.reorderPages);
   const selectedPage = useSelectedPage();
 
   // `distance: 5` => un click simplu selecteaza pagina, nu porneste un drag.
+  // Pe touch folosim apasare lunga (250 ms): altfel tragerea ar bloca derularea
+  // listei cu degetul. Oricum, pe telefon exista si butoanele sus/jos.
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
@@ -71,6 +80,7 @@ export function Sidebar() {
                     page={page}
                     index={index}
                     selected={page.id === selectedPageId}
+                    onOpen={onPageOpen}
                   />
                   {/* Buton discret de inserare intre pagini. */}
                   <AddPageMenu index={index + 1} variant="inline" />

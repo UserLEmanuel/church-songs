@@ -28,7 +28,8 @@ export function CanvasPreview() {
     const el = wrapRef.current;
     if (!el) return;
     const update = () => {
-      const padding = 56;
+      // Trebuie sa corespunda cu clasa de padding de mai jos (p-3 pe telefon, p-7 in rest).
+      const padding = window.innerWidth < 768 ? 24 : 56;
       const w = el.clientWidth - padding;
       const h = el.clientHeight - padding;
       if (w <= 0 || h <= 0) return;
@@ -47,7 +48,7 @@ export function CanvasPreview() {
   const chunks = tooSmall ? splitBody(page.body ?? '', linesPerSlide(format)) : null;
 
   return (
-    <div ref={wrapRef} className="relative flex h-full items-center justify-center bg-canvas p-7">
+    <div ref={wrapRef} className="relative flex h-full items-center justify-center bg-canvas p-3 md:p-7">
       {page ? (
         <>
           <div

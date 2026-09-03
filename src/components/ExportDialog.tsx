@@ -40,7 +40,7 @@ export function ExportDialog({ open, onClose, onChoose }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="export-title"
-        className="w-full max-w-lg rounded-2xl bg-surface p-5 shadow-2xl"
+        className="max-h-[88vh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-2xl bg-surface p-4 shadow-2xl sm:p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="export-title" className="text-lg font-bold text-ink">

@@ -5,6 +5,7 @@ import { CanvasPreview } from './components/CanvasPreview';
 import { EditorPanel } from './components/EditorPanel';
 import { NewServiceDialog } from './components/NewServiceDialog';
 import { ExportDialog, type ExportKind } from './components/ExportDialog';
+import { MobileTabBar, type MobileTab } from './components/MobileTabBar';
 import { resolveBackgroundSrc, useLibraryStore } from './store/useLibraryStore';
 import { useSelectedPage, useServiceStore } from './store/useServiceStore';
 import { useMediaQuery } from './lib/useMediaQuery';
@@ -16,10 +17,14 @@ export function App() {
   const backgrounds = useLibraryStore((s) => s.backgrounds);
   const loadLibrary = useLibraryStore((s) => s.load);
 
+  // Sub 768px afisam o singura zona odata, cu bara de navigare de jos.
+  const phoneLayout = useMediaQuery('(max-width: 767px)');
   // Sub 1280px nu incap trei coloane fara sa strivim previzualizarea,
   // asa ca acolo sidebar-ul devine un panou care aluneca peste continut.
   const wideLayout = useMediaQuery('(min-width: 1280px)');
+
   const [sidebarOpen, setSidebarOpen] = useState(wideLayout);
+  const [mobileTab, setMobileTab] = useState<MobileTab>('slide');
 
   // Cand fereastra trece pragul, deschidem/inchidem sidebar-ul automat.
   useEffect(() => {
@@ -82,6 +87,16 @@ export function App() {
     [service, backgrounds],
   );
 
+  const editor = selectedPage ? (
+    <EditorPanel key={selectedPage.id} page={selectedPage} />
+  ) : (
+    <div className="flex h-full items-center justify-center bg-surface p-6">
+      <p className="max-w-xs text-center text-sm text-ink-muted">
+        Alege întâi o pagină din lista <strong className="text-ink">Pagini</strong>.
+      </p>
+    </div>
+  );
+
   return (
     <div className="flex h-full flex-col">
       <Toolbar
@@ -92,39 +107,55 @@ export function App() {
         onToggleSidebar={() => setSidebarOpen((v) => !v)}
       />
 
-      <main className="relative flex min-h-0 flex-1">
-        {sidebarOpen &&
-          (wideLayout ? (
-            // Ecran lat: sidebar-ul e o coloana normala.
-            <div className="w-72 shrink-0 border-r border-line">
-              <Sidebar />
-            </div>
-          ) : (
-            // Ecran ingust: panou peste continut, cu fundal pe care poti da click.
-            <>
-              <div
-                className="absolute inset-0 z-20 bg-ink/25"
-                onClick={() => setSidebarOpen(false)}
-                role="presentation"
-              />
-              <div className="absolute inset-y-0 left-0 z-30 w-72 border-r border-line shadow-2xl">
+      {phoneLayout ? (
+        /* Telefon: o singura zona odata, aleasa din bara de jos. */
+        <main className="min-h-0 flex-1">
+          {mobileTab === 'pages' && <Sidebar onPageOpen={() => setMobileTab('edit')} />}
+          {mobileTab === 'slide' && <CanvasPreview />}
+          {mobileTab === 'edit' && editor}
+        </main>
+      ) : (
+        <main className="relative flex min-h-0 flex-1">
+          {sidebarOpen &&
+            (wideLayout ? (
+              // Ecran lat: sidebar-ul e o coloana normala.
+              <div className="w-72 shrink-0 border-r border-line">
                 <Sidebar />
               </div>
-            </>
-          ))}
+            ) : (
+              // Ecran mediu: panou peste continut, cu fundal pe care poti da click.
+              <>
+                <div
+                  className="absolute inset-0 z-20 bg-ink/25"
+                  onClick={() => setSidebarOpen(false)}
+                  role="presentation"
+                />
+                <div className="absolute inset-y-0 left-0 z-30 w-72 border-r border-line shadow-2xl">
+                  <Sidebar />
+                </div>
+              </>
+            ))}
 
-        <div className="min-w-0 flex-1">
-          <CanvasPreview />
-        </div>
-
-        {selectedPage && (
-          <div className="w-72 shrink-0 border-l border-line lg:w-80 xl:w-96">
-            <EditorPanel key={selectedPage.id} page={selectedPage} />
+          <div className="min-w-0 flex-1">
+            <CanvasPreview />
           </div>
-        )}
-      </main>
 
-      <NewServiceDialog open={newOpen} onClose={() => setNewOpen(false)} />
+          {selectedPage && (
+            <div className="w-72 shrink-0 border-l border-line lg:w-80 xl:w-96">
+              <EditorPanel key={selectedPage.id} page={selectedPage} />
+            </div>
+          )}
+        </main>
+      )}
+
+      {phoneLayout && <MobileTabBar value={mobileTab} onChange={setMobileTab} />}
+
+      <NewServiceDialog
+        open={newOpen}
+        onClose={() => setNewOpen(false)}
+        // Pe telefon aratam lista noua de pagini, nu direct primul formular.
+        onCreated={() => setMobileTab('pages')}
+      />
       <ExportDialog
         open={exportOpen}
         onClose={() => setExportOpen(false)}
@@ -132,8 +163,8 @@ export function App() {
       />
 
       {exporting && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40">
-          <div className="w-80 rounded-2xl bg-surface p-5 text-center shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4">
+          <div className="w-full max-w-xs rounded-2xl bg-surface p-5 text-center shadow-2xl">
             <p className="text-sm font-semibold text-ink">Se pregătește exportul…</p>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-sunken">
               <div

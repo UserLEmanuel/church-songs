@@ -43,6 +43,23 @@ Serviciul curent se salvează automat în browser (`localStorage`), deci nu se p
 
 **Scurtături:** săgețile `↑` / `↓` schimbă slide-ul (cât timp nu scrii într-un câmp).
 
+### Pe telefon și tabletă
+
+Aplicația merge din orice browser de telefon, fără instalare — e aceeași adresă.
+
+- **Sub 768px** (telefon): se vede o singură zonă odată, iar între ele comuți din bara de jos:
+  **Pagini** · **Slide** · **Editează**. Când apeși o pagină din listă, treci automat la
+  completarea ei.
+- **768–1279px** (tabletă): previzualizarea și panoul de editare stau alături, iar lista de
+  pagini se deschide peste conținut din butonul din stânga sus.
+- **Peste 1280px**: cele trei coloane, una lângă alta.
+
+Pe telefon, reordonarea se face cu butoanele `↑` / `↓` de pe fiecare pagină (tragerea cu degetul
+merge tot, prin apăsare lungă, dar butoanele sunt mai sigure într-o listă care derulează).
+
+Exportul funcționează identic de pe telefon: fișierele ies la aceeași rezoluție ca de pe
+calculator, pentru că slide-urile se randează la dimensiunea formatului, nu la cea a ecranului.
+
 ### Formate
 
 Formatul se aplică întregului serviciu și se schimbă oricând din butonul din bara de sus.
@@ -200,3 +217,7 @@ Detalii de implementare care contează:
   din fundal, iar fără ele exportul s-ar bloca dacă schimbi tabul.
 - Paleta și stilurile sunt în `tailwind.config.js` (culori semantice: `ink`, `brand`, `line`,
   `surface`), nu împrăștiate prin componente.
+- Pragurile de layout din JavaScript (`useMediaQuery`) folosesc aceleași valori ca breakpoint-urile
+  Tailwind (768px și 1280px), ca CSS-ul și componentele să comute în același punct.
+- Pe ecrane mici câmpurile sunt fixate la 16px: sub această valoare iOS mărește automat pagina
+  când intri într-un câmp.

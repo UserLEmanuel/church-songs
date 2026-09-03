@@ -41,14 +41,14 @@ export function SlideSettingsMenu() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         title="Formatul și fontul slide-urilor"
-        className="flex items-center gap-2 rounded-lg border border-line-strong bg-surface px-2.5 py-1.5 text-[13px] font-semibold text-ink-muted transition hover:border-brand hover:text-brand"
+        className="flex h-10 min-w-[2.75rem] shrink-0 items-center justify-center gap-2 rounded-lg border border-line-strong bg-surface px-3 text-[13px] font-semibold text-ink-muted transition hover:border-brand hover:text-brand md:h-auto md:py-1.5"
       >
         <IconRatio ratio={format.width / format.height} size={16} />
         <span className="hidden sm:inline">{format.label}</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-40 mt-1.5 w-80 overflow-hidden rounded-xl border border-line bg-surface shadow-xl">
+        <div className="absolute right-0 top-full z-40 mt-1.5 w-[min(20rem,calc(100vw-1rem))] max-h-[70vh] overflow-y-auto overscroll-contain rounded-xl border border-line bg-surface shadow-xl">
           <fieldset className="p-3">
             <legend className="mb-2 text-[11px] font-bold uppercase tracking-wider text-ink-subtle">
               Format slide

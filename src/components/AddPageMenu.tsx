@@ -40,7 +40,7 @@ export function AddPageMenu({ index, variant = 'button' }: Props) {
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
-          className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-line-strong px-3 py-2.5 text-[13px] font-semibold text-ink-muted transition hover:border-brand hover:bg-brand-soft hover:text-brand"
+          className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-line-strong px-3 py-3 text-sm font-semibold text-ink-muted transition hover:border-brand hover:bg-brand-soft hover:text-brand md:py-2.5 md:text-[13px]"
         >
           <IconPlus size={15} />
           Adaugă pagină
@@ -52,8 +52,10 @@ export function AddPageMenu({ index, variant = 'button' }: Props) {
           title="Inserează o pagină aici"
           aria-label={`Inserează o pagină pe poziția ${index + 1}`}
           aria-expanded={open}
-          className={`flex h-4 w-full items-center justify-center transition ${
-            open ? 'opacity-100' : 'opacity-0 hover:opacity-100 focus-visible:opacity-100'
+          className={`flex w-full items-center justify-center transition max-md:h-9 md:h-4 ${
+            open
+              ? 'opacity-100'
+              : 'opacity-100 md:opacity-0 md:hover:opacity-100 md:focus-visible:opacity-100'
           }`}
         >
           <span className="h-px flex-1 bg-brand/30" />
@@ -78,7 +80,7 @@ export function AddPageMenu({ index, variant = 'button' }: Props) {
                 addPage(type, index);
                 setOpen(false);
               }}
-              className="block w-full border-b border-line/60 px-3 py-2.5 text-left transition last:border-b-0 hover:bg-brand-soft"
+              className="block w-full border-b border-line/60 px-3 py-3 text-left transition last:border-b-0 hover:bg-brand-soft md:py-2.5"
             >
               <span className="block text-[13px] font-semibold text-ink">
                 {PAGE_TYPE_LABEL[type]}

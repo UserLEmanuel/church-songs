@@ -4,10 +4,15 @@ import { FORMAT_LIST } from '../lib/formats';
 import { useServiceStore } from '../store/useServiceStore';
 import { IconRatio } from './icons';
 
-type Props = { open: boolean; onClose: () => void };
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  /** Apelat doar cand serviciul chiar a fost creat (nu si la renuntare). */
+  onCreated?: () => void;
+};
 
 /** Dialogul "Serviciu nou": alege formatul si sablonul. */
-export function NewServiceDialog({ open, onClose }: Props) {
+export function NewServiceDialog({ open, onClose, onCreated }: Props) {
   const newService = useServiceStore((s) => s.newService);
   const setFormat = useServiceStore((s) => s.setFormat);
   const currentFormat = useServiceStore((s) => s.service.format);
@@ -33,6 +38,7 @@ export function NewServiceDialog({ open, onClose }: Props) {
   const choose = (id: TemplateId) => {
     setFormat(format);
     newService(id);
+    onCreated?.();
     onClose();
   };
 
@@ -46,7 +52,7 @@ export function NewServiceDialog({ open, onClose }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="new-service-title"
-        className="w-full max-w-lg rounded-2xl bg-surface p-5 shadow-2xl"
+        className="max-h-[88vh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-2xl bg-surface p-4 shadow-2xl sm:p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="new-service-title" className="text-lg font-bold text-ink">

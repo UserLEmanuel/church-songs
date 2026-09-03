@@ -8,11 +8,33 @@ body,
   height: 100%;
 }
 
+/* Pe telefon bara de adrese schimba inaltimea ferestrei; `dvh` tine cont de ea. */
+@supports (height: 100dvh) {
+  #root {
+    height: 100dvh;
+  }
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* Fara scroll orizontal si fara "bounce" lateral pe mobil. */
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
   @apply bg-surface-muted text-ink;
+}
+
+/*
+ * Pe ecrane mici campurile trebuie sa aiba minim 16px:
+ * sub aceasta valoare iOS mareste automat pagina cand intri in camp.
+ */
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
 }
 
 /* Inel de focus vizibil peste tot, dar doar la navigarea cu tastatura. */

@@ -37,13 +37,13 @@ export function BackgroundPicker({ page }: Props) {
         <button
           type="button"
           onClick={() => setBackgroundForAll(page.backgroundId)}
-          className="rounded px-1.5 py-0.5 text-[11px] font-semibold text-brand transition hover:bg-brand-soft"
+          className="-mr-1.5 rounded px-2 py-2 text-xs font-semibold text-brand transition hover:bg-brand-soft md:px-1.5 md:py-0.5 md:text-[11px]"
         >
           Aplică la toate
         </button>
       </div>
 
-      <div className="thin-scroll grid max-h-36 grid-cols-4 gap-1.5 overflow-y-auto pr-1">
+      <div className="thin-scroll grid max-h-48 grid-cols-4 gap-2 overflow-y-auto pr-1 md:max-h-36 md:gap-1.5">
         {backgrounds.map((bg) => {
           const active = bg.id === page.backgroundId;
           return (
@@ -81,7 +81,7 @@ export function BackgroundPicker({ page }: Props) {
       <button
         type="button"
         onClick={() => fileRef.current?.click()}
-        className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-line-strong bg-surface px-3 py-2 text-xs font-semibold text-ink-muted transition hover:border-brand hover:text-brand"
+        className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-line-strong bg-surface px-3 py-3 text-sm font-semibold text-ink-muted transition hover:border-brand hover:text-brand md:py-2 md:text-xs"
       >
         <IconUpload size={14} />
         Încarcă imaginea ta
@@ -104,7 +104,7 @@ export function BackgroundPicker({ page }: Props) {
           step={1}
           value={Math.round(overlay * 100)}
           onChange={(e) => updatePage(page.id, { overlayOpacity: Number(e.target.value) / 100 })}
-          className="mt-1.5 w-full accent-brand"
+          className="mt-1.5 h-6 w-full accent-brand md:h-auto"
         />
       </label>
     </div>
